@@ -5,6 +5,8 @@ import "../styles/Styles.css";
 import MemeList from "./MemeList";
 
 export default () => {
+  console.log(process.env);
+
   return (
     <Container className="app" textAlign="center">
       <HeaderSection />
@@ -19,7 +21,7 @@ export default () => {
             <p className="same-line">Please choose a meme or </p>{" "}
             <Button className="same-line"> Upload One</Button>
             <MemeList />
-            <CaptionSection></CaptionSection>
+            <CaptionSection />
           </Segment>
         </Grid.Column>
       </Grid>
@@ -43,11 +45,14 @@ function CaptionSection() {
   return (
     <div className="ui text container segment">
       <Segment>
-        <TextArea></TextArea>
+        <input type="text" name="topText" placeholder="Top Text" />
       </Segment>
       <Segment>
-        <TextArea></TextArea>
+        <input type="text" name="bottomText" placeholder="Bottom Text" />
       </Segment>
+      <Button onClick={() => console.log("clicked")} className="same-line">
+        Generate Meme
+      </Button>
     </div>
   );
 }
