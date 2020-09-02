@@ -21,21 +21,58 @@ export default () => {
       await axios
         .get("https://api.imgflip.com/get_memes", {})
         .then(function (response) {
-          // handle success
           const memes = response.data.data.memes;
           setMemes(memes);
-          // setShuffledMemes(renderedList);
         })
         .catch(function (error) {
-          // handle error
           console.log("There was an error getting memes");
         });
     })();
   }, []);
 
+  function generate() {
+    console.log("generating");
+  }
+
+  const generateMeme = () => {
+    const formData = new FormData();
+    formData.append("username", "epicdelia");
+    formData.append("password", "memegenerator2020");
+    formData.append("template_id", selectedMeme.id);
+    captions.forEach((caption, index) =>
+      formData.append(`boxes[${index}][text]`, caption)
+    );
+    axios({
+      method: "post",
+      url: "https://api.imgflip.com/caption_image",
+      data: formData,
+      headers: { "Content-Type": "multipart/form-data" },
+    })
+      .then(function (response) {
+        //handle success
+        console.log(response);
+      })
+      .catch(function (response) {
+        //handle error
+        console.log(response);
+      });
+  };
+
   function onMemeSelect(meme) {
     setSelectedMeme(meme);
-    console.log(`I selected this and captions are ${meme.box_count}`);
+  }
+
+  function updateCaption(e, index) {
+    const text = e.target.value || "";
+    setCaptions(
+      captions.map((c, i) => {
+        if (index == i) {
+          return text;
+        } else {
+          return c;
+        }
+      })
+    );
   }
 
   return (
@@ -57,6 +94,7 @@ export default () => {
             {captions.map((caption, index) => (
               <Segment>
                 <input
+                  onChange={(e) => updateCaption(e, index)}
                   key={index}
                   type="text"
                   name="topText"
@@ -64,10 +102,7 @@ export default () => {
                 />
               </Segment>
             ))}
-            <Button
-              onClick={() => console.log("clicked")}
-              className="same-line"
-            >
+            <Button onClick={generateMeme} className="same-line">
               Generate Meme
             </Button>
           </div>
@@ -82,8 +117,10 @@ function HeaderSection() {
     <div className="ui raised very padded text container segment">
       <h2 className="ui header">Meme Generator</h2>
       <p>
-        Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-        tempor incididunt ut labore et dolore magna aliqua.
+        {" "}
+        Click which meme you want to use and fill in the appropriate captions.
+        If you don't like any of them, you can regenerate by clicking the "Show
+        me more memes" button. Happy creating!
       </p>
     </div>
   );
