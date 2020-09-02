@@ -7,3 +7,7 @@
 .same-line{
   display: inline-block;
 }
+
+.clickable-meme{
+  cursor: pointer;
+}

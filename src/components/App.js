@@ -7,6 +7,14 @@ import axios from "axios";
 
 export default () => {
   const [memes, setMemes] = useState([]);
+  const [captions, setCaptions] = useState([]);
+  const [selectedMeme, setSelectedMeme] = useState({
+    url: "https://i.imgflip.com/ljk.jpg",
+  });
+
+  useEffect(() => {
+    setCaptions(Array(selectedMeme.box_count).fill(" "));
+  }, [memes, selectedMeme]);
 
   useEffect(() => {
     (async () => {
@@ -25,22 +33,44 @@ export default () => {
     })();
   }, []);
 
+  function onMemeSelect(meme) {
+    setSelectedMeme(meme);
+    console.log(`I selected this and captions are ${meme.box_count}`);
+  }
+
   return (
     <Container className="app" textAlign="center">
       <HeaderSection />
       <Grid columns="equal">
         <Grid.Column>
           <Segment>
-            <Meme />
+            <Meme meme={selectedMeme} />
           </Segment>
         </Grid.Column>
         <Grid.Column width={5}>
           <Segment>
             <p className="same-line">Please choose a meme or </p>{" "}
             <Button className="same-line"> Upload One</Button>
-            <MemeList memes={memes} />
-            <CaptionSection />
+            <MemeList onMemeSelect={onMemeSelect} memes={memes} />
           </Segment>
+          <div className="ui text container segment">
+            {captions.map((caption, index) => (
+              <Segment>
+                <input
+                  key={index}
+                  type="text"
+                  name="topText"
+                  placeholder="Top Text"
+                />
+              </Segment>
+            ))}
+            <Button
+              onClick={() => console.log("clicked")}
+              className="same-line"
+            >
+              Generate Meme
+            </Button>
+          </div>
         </Grid.Column>
       </Grid>
     </Container>
@@ -55,22 +85,6 @@ function HeaderSection() {
         Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
         tempor incididunt ut labore et dolore magna aliqua.
       </p>
-    </div>
-  );
-}
-
-function CaptionSection() {
-  return (
-    <div className="ui text container segment">
-      <Segment>
-        <input type="text" name="topText" placeholder="Top Text" />
-      </Segment>
-      <Segment>
-        <input type="text" name="bottomText" placeholder="Bottom Text" />
-      </Segment>
-      <Button onClick={() => console.log("clicked")} className="same-line">
-        Generate Meme
-      </Button>
     </div>
   );
 }

@@ -30,7 +30,7 @@ const MemeList = ({ memes, onMemeSelect }) => {
       return (
         <Grid.Column key={memes[index].id}>
           {/*<Meme meme={memes[index]} />*/}
-          <MemeItem meme={memes[index]} />
+          <MemeItem onMemeSelect={onMemeSelect} meme={memes[index]} />
         </Grid.Column>
       );
     });
@@ -60,8 +60,14 @@ const MemeList = ({ memes, onMemeSelect }) => {
   return <div></div>;
 };
 
-const MemeItem = ({ meme }) => {
-  return <Image src={meme.url} />;
+const MemeItem = ({ meme, onMemeSelect }) => {
+  return (
+    <Image
+      onClick={() => onMemeSelect(meme)}
+      className="clickable-meme"
+      src={meme.url}
+    />
+  );
 };
 
 export default MemeList;
