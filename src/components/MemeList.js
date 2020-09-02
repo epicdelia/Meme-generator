@@ -4,9 +4,8 @@ import { Button, Grid, Image, Segment } from "semantic-ui-react";
 import "../styles/Styles.css";
 import Meme from "./Meme";
 
-const MemeList = ({ onMemeSelect }) => {
-  const [memes, setMemes] = useState([]);
-  const [shuffledMemes, setShuffledMemes] = useState([]);
+const MemeList = ({ memes, onMemeSelect }) => {
+  const [shuffledMemes, setShuffledMemes] = useState([memes]);
 
   function shuffleArray(array) {
     let i = array.length - 1;
@@ -20,46 +19,8 @@ const MemeList = ({ onMemeSelect }) => {
   }
 
   useEffect(() => {
-    (async () => {
-      await axios
-        .get("https://api.imgflip.com/get_memes", {})
-        .then(function (response) {
-          // handle success
-          const memes = response.data.data.memes;
-          setMemes(memes);
-          shuffleArray(memes);
-          // setShuffledMemes(renderedList);
-        })
-        .catch(function (error) {
-          // handle error
-          console.log("There was an error getting memes");
-        });
-    })();
-  }, []);
-
-  // useEffect(() => {
-  //   (async () => {
-  //     await axios
-  //       .get(
-  //         "https://api.imgflip.com/caption_image",
-  //         {
-  //           params: {
-  //             username: "epicdelia",
-  //             password: "memegenerator2020",
-  //           },
-  //         },
-  //         {}
-  //       )
-  //       .then(function (response) {
-  //         // handle success
-  //         const memes = response.data.data.memes;
-  //         setMemes(memes);
-  //       })
-  //       .catch(function (error) {
-  //         // handle error
-  //       });
-  //   })();
-  // }, []);
+    shuffleArray(memes);
+  }, [memes]);
 
   const renderedList = () => {
     return shuffledMemes.slice(0, 6).map((meme, index) => {
@@ -75,25 +36,28 @@ const MemeList = ({ onMemeSelect }) => {
     });
   };
 
-  return (
-    <div className="ui relaxed divided list">
-      <Image.Group size="small">
-        <Grid columns={3} divided>
-          <Grid.Row>{renderedList()}</Grid.Row>
-        </Grid>{" "}
-      </Image.Group>
-      <Grid.Column textAlign="center">
-        <Button
-          onClick={() => shuffleArray(memes)}
-          className="padding-top"
-          size="huge"
-        >
-          {" "}
-          Show me more Memes{" "}
-        </Button>
-      </Grid.Column>
-    </div>
-  );
+  if (memes.length) {
+    return (
+      <div className="ui relaxed divided list">
+        <Image.Group size="small">
+          <Grid columns={3} divided>
+            <Grid.Row>{renderedList()}</Grid.Row>
+          </Grid>{" "}
+        </Image.Group>
+        <Grid.Column textAlign="center">
+          <Button
+            onClick={() => shuffleArray(memes)}
+            className="padding-top"
+            size="huge"
+          >
+            {" "}
+            Show me more Memes{" "}
+          </Button>
+        </Grid.Column>
+      </div>
+    );
+  }
+  return <div></div>;
 };
 
 const MemeItem = ({ meme }) => {

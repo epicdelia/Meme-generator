@@ -1,11 +1,29 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Meme from "./Meme";
 import { TextArea, Grid, Segment, Container, Button } from "semantic-ui-react";
 import "../styles/Styles.css";
 import MemeList from "./MemeList";
+import axios from "axios";
 
 export default () => {
-  console.log(process.env);
+  const [memes, setMemes] = useState([]);
+
+  useEffect(() => {
+    (async () => {
+      await axios
+        .get("https://api.imgflip.com/get_memes", {})
+        .then(function (response) {
+          // handle success
+          const memes = response.data.data.memes;
+          setMemes(memes);
+          // setShuffledMemes(renderedList);
+        })
+        .catch(function (error) {
+          // handle error
+          console.log("There was an error getting memes");
+        });
+    })();
+  }, []);
 
   return (
     <Container className="app" textAlign="center">
@@ -20,7 +38,7 @@ export default () => {
           <Segment>
             <p className="same-line">Please choose a meme or </p>{" "}
             <Button className="same-line"> Upload One</Button>
-            <MemeList />
+            <MemeList memes={memes} />
             <CaptionSection />
           </Segment>
         </Grid.Column>
