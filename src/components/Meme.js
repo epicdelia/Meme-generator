@@ -1,5 +1,4 @@
-import React, { useEffect, useState } from "react";
-import axios from "axios";
+import React from "react";
 
 const Meme = (meme) => {
   if (!meme) {
@@ -9,3 +8,12 @@ const Meme = (meme) => {
 };
 
 export default Meme;
+
+// <Switch>
+//   <Route path="/">
+//     <Meme meme={selectedMeme} />
+//   </Route>
+//   <Route path="/generated">
+//     <Meme meme={selectedMeme} />
+//   </Route>
+// </Switch>

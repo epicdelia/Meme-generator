@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { Button, Grid, Image, Segment } from "semantic-ui-react";
 import "../styles/Styles.css";
-import Meme from "./Meme";
 
 const MemeList = ({ memes, onMemeSelect }) => {
   const [shuffledMemes, setShuffledMemes] = useState([memes]);
@@ -24,12 +23,8 @@ const MemeList = ({ memes, onMemeSelect }) => {
 
   const renderedList = () => {
     return shuffledMemes.slice(0, 6).map((meme, index) => {
-      // return (
-      //   <Meme key={meme.id.memeId} onMemeSelect={onMemeSelect} meme={meme} />
-      // );
       return (
         <Grid.Column key={memes[index].id}>
-          {/*<Meme meme={memes[index]} />*/}
           <MemeItem onMemeSelect={onMemeSelect} meme={memes[index]} />
         </Grid.Column>
       );

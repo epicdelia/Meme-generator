@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from "react";
 import Meme from "./Meme";
-import { TextArea, Grid, Segment, Container, Button } from "semantic-ui-react";
+import { Grid, Segment, Container, Button } from "semantic-ui-react";
 import "../styles/Styles.css";
 import MemeList from "./MemeList";
 import axios from "axios";
+import { useHistory } from "react-router-dom";
 
-export default () => {
+const App = () => {
   const [memes, setMemes] = useState([]);
   const [captions, setCaptions] = useState([]);
   const [selectedMeme, setSelectedMeme] = useState({
@@ -15,6 +16,7 @@ export default () => {
   useEffect(() => {
     setCaptions(Array(selectedMeme.box_count).fill(" "));
   }, [memes, selectedMeme]);
+  const history = useHistory();
 
   useEffect(() => {
     (async () => {
@@ -30,14 +32,10 @@ export default () => {
     })();
   }, []);
 
-  function generate() {
-    console.log("generating");
-  }
-
   const generateMeme = () => {
     const formData = new FormData();
-    formData.append("username", "epicdelia");
-    formData.append("password", "memegenerator2020");
+    formData.append("username", process.env.REACT_APP_USERNAME);
+    formData.append("password", process.env.REACT_APP_PASSWORD);
     formData.append("template_id", selectedMeme.id);
     captions.forEach((caption, index) =>
       formData.append(`boxes[${index}][text]`, caption)
@@ -46,16 +44,12 @@ export default () => {
       method: "post",
       url: "https://api.imgflip.com/caption_image",
       data: formData,
-      headers: { "Content-Type": "multipart/form-data" },
-    })
-      .then(function (response) {
-        //handle success
-        console.log(response);
-      })
-      .catch(function (response) {
-        //handle error
-        console.log(response);
-      });
+    }).then(function (response) {
+      console.log(response.data.url);
+
+      console.log(response.data.url);
+      history.push(`generated?url=${response.data.url}`);
+    });
   };
 
   function onMemeSelect(meme) {
@@ -66,7 +60,7 @@ export default () => {
     const text = e.target.value || "";
     setCaptions(
       captions.map((c, i) => {
-        if (index == i) {
+        if (index === i) {
           return text;
         } else {
           return c;
@@ -92,7 +86,7 @@ export default () => {
           </Segment>
           <div className="ui text container segment">
             {captions.map((caption, index) => (
-              <Segment>
+              <Segment key={index}>
                 <input
                   onChange={(e) => updateCaption(e, index)}
                   key={index}
@@ -125,3 +119,5 @@ function HeaderSection() {
     </div>
   );
 }
+
+export default App;
