@@ -19,8 +19,7 @@ const App = () => {
   });
 
   const download = (e) => {
-    console.log(generated);
-    fetch(generated, {
+    fetch(generated.url, {
       method: "GET",
       headers: {},
     })
@@ -29,7 +28,7 @@ const App = () => {
           const url = window.URL.createObjectURL(new Blob([buffer]));
           const link = document.createElement("a");
           link.href = url;
-          link.setAttribute("download", "meme.jpg"); //or any other extension
+          link.setAttribute("download", `${selectedMeme.name}.jpg`); //or any other extension
           document.body.appendChild(link);
           link.click();
           history.push("/");
@@ -81,8 +80,7 @@ const App = () => {
       data: formData,
     })
       .then((response) => {
-        console.log(response.data.data.url);
-        setGenerated(response.data.data.url);
+        setGenerated(response.data.data);
         history.push(`generated?url=${response.data.data.url}`);
       })
       .catch(function (error) {
