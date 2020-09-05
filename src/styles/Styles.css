@@ -11,3 +11,7 @@
 .clickable-meme{
   cursor: pointer;
 }
+
+.max-size{
+  max-width: 100px;
+}

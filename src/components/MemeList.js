@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
-import { Button, Grid, Image, Segment } from "semantic-ui-react";
+import { Button, Grid, Image } from "semantic-ui-react";
 import "../styles/Styles.css";
 
 const MemeList = ({ memes, onMemeSelect }) => {
