@@ -12,10 +12,33 @@ import { useHistory, Switch, Route } from "react-router-dom";
 const App = () => {
   const [memes, setMemes] = useState([]);
   const [captions, setCaptions] = useState([]);
+  const [generated, setGenerated] = useState([]);
 
   const [selectedMeme, setSelectedMeme] = useState({
     url: "https://i.imgflip.com/ljk.jpg",
   });
+
+  const download = (e) => {
+    console.log(generated);
+    fetch(generated, {
+      method: "GET",
+      headers: {},
+    })
+      .then((response) => {
+        response.arrayBuffer().then(function (buffer) {
+          const url = window.URL.createObjectURL(new Blob([buffer]));
+          const link = document.createElement("a");
+          link.href = url;
+          link.setAttribute("download", "meme.jpg"); //or any other extension
+          document.body.appendChild(link);
+          link.click();
+          history.push("/");
+        });
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
 
   useEffect(() => {
     let arr = Array(selectedMeme.box_count)
@@ -46,13 +69,11 @@ const App = () => {
 
   const generateMeme = () => {
     const formData = new FormData();
-    console.log("getting GENERATING");
     formData.append("username", process.env.REACT_APP_USERNAME);
     formData.append("password", process.env.REACT_APP_PASSWORD);
     formData.append("template_id", selectedMeme.id);
     captions.forEach((caption, index) => {
       formData.append(`boxes[${index}][text]`, caption);
-      console.log(formData);
     });
     axios({
       method: "post",
@@ -60,6 +81,8 @@ const App = () => {
       data: formData,
     })
       .then((response) => {
+        console.log(response.data.data.url);
+        setGenerated(response.data.data.url);
         history.push(`generated?url=${response.data.data.url}`);
       })
       .catch(function (error) {
@@ -94,15 +117,19 @@ const App = () => {
             <Switch>
               <Route exact path="/">
                 <Meme meme={selectedMeme} />
+              </Route>
+              <Route path="/generated">
+                <GeneratedMeme />
                 <Segment vertical>
-                  <Button className="padding-top" size="huge">
+                  <Button
+                    className="padding-top"
+                    size="huge"
+                    onClick={(e) => download(selectedMeme)}
+                  >
                     {" "}
                     Download Meme
                   </Button>
                 </Segment>
-              </Route>
-              <Route path="/generated">
-                <GeneratedMeme />
               </Route>
             </Switch>
           </Segment>
