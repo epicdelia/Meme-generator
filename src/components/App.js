@@ -13,9 +13,9 @@ const App = () => {
   const [memes, setMemes] = useState([]);
   const [captions, setCaptions] = useState([]);
   const [generated, setGenerated] = useState([]);
-
   const [selectedMeme, setSelectedMeme] = useState({
     url: "https://i.imgflip.com/ljk.jpg",
+    box_count: 0,
   });
 
   const download = (e) => {
@@ -106,6 +106,24 @@ const App = () => {
     );
   }
 
+  function hasCaptions() {
+    let caps = true;
+    captions.forEach((cap) => {
+      console.log(cap);
+      if (!isEmpty(cap)) {
+        caps = false;
+      }
+    });
+    return caps;
+  }
+
+  function isEmpty(str) {
+    if (str == null || str.trim().length == 0) {
+      return true;
+    }
+    return false;
+  }
+
   return (
     <Container className="app" textAlign="center">
       <HeaderSection />
@@ -147,12 +165,16 @@ const App = () => {
                   onChange={(e) => updateCaption(e, index)}
                   key={index}
                   type="text"
-                  name="topText"
                   placeholder="Meme text"
                 />
               </Segment>
             ))}
-            <Button onClick={generateMeme} className="same-line">
+            <Button
+              // disabled={captions.length == 1 && captions[0] == " "}
+              disabled={hasCaptions()}
+              onClick={generateMeme}
+              className="same-line"
+            >
               Generate Meme
             </Button>
           </div>
